@@ -1,0 +1,55 @@
+{
+    "g-28": {
+        "FirstName": [
+            "form1[0].#subform[1].Pt3Line5b_GivenName[0]",
+            "form1[0].#subform[3].Pt3Line5b_GivenName[1]"
+        ],
+        "MiddleName": [
+            "form1[0].#subform[1].Pt3Line5c_MiddleName[0]",
+            "form1[0].#subform[3].Pt3Line5c_MiddleName[1]"
+        ],
+        "LastName": [
+            "form1[0].#subform[1].Pt3Line5a_FamilyName[0]",
+            "form1[0].#subform[3].Pt3Line5a_FamilyName[1]"
+        ],
+        "FullName": [],
+        "Email": [
+            "form1[0].#subform[1].Line11_EMail[0]"
+        ],
+        "Date": [
+            "form1[0].#subform[2].Pt4Line2b_DateofSignature[0]",
+            "form1[0].#subform[2].Line3_Date[0]",
+            "form1[0].#subform[2].Pt5Line2b_DateofSignature[0]"
+        ],
+        "LawyerFirstName": [
+            "form1[0].#subform[0].Pt1Line2b_GivenName[0]"
+        ],
+        "LawyerMiddleName": [
+            "form1[0].#subform[0].Pt1Line2c_MiddleName[0]"
+        ],
+        "LawyerLastName": [
+            "form1[0].#subform[0].Pt1Line2a_FamilyName[0]"
+        ]
+    },
+    "i-589": {
+        "FirstName": [
+            "form1[0].#subform[0].PtAILine5_FirstName[0]"
+        ],
+        "MiddleName": [
+            "form1[0].#subform[0].PtAILine6_MiddleName[0]"
+        ],
+        "LastName": [
+            "form1[0].#subform[0].PtAILine4_LastName[0]"
+        ],
+        "FullName": [
+            "form1[0].#subform[10].TextField20[0]"
+        ],
+        "Email": [],
+        "Date": [
+            "form1[0].#subform[10].DateTimeField48[0]"
+        ],
+        "LawyerFirstName": [],
+        "LawyerMiddleName": [],
+        "LawyerLastName": []
+    }
+}
