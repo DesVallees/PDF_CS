@@ -17,3 +17,16 @@ C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\obj\Debug\net6.0\refint\PDFEditor.dll
 C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\obj\Debug\net6.0\PDFEditor.pdb
 C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\obj\Debug\net6.0\PDFEditor.genruntimeconfig.cache
 C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\obj\Debug\net6.0\ref\PDFEditor.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\Spire.Doc.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\Spire.Pdf.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\System.Drawing.Common.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\System.Security.Cryptography.Xml.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\System.Security.Permissions.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\System.Windows.Extensions.dll
+C:\Users\sntgo\Xamarin\PDFEditor\PDFEditor\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll

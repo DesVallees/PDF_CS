@@ -1,7 +1,9 @@
 ﻿using iTextSharp.text.pdf;
+using Document = iTextSharp.text.Document;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using WordDoc = Spire.Doc;
 
 var dataDir = @"c:\Users\sntgo\Xamarin\PDFEditor\";
 
@@ -204,18 +206,85 @@ void removeField(string formName, string fieldNumber)
         pdfReader.Dispose();
     }
 }
-Console.WriteLine("INPUT 'r' AT ANY POINT TO RESTART");
+bool MergePDFs(List<string> fileNames, string targetPdf)
+{
+    bool merged = true;
+
+    File.Delete(targetPdf);
+    using (FileStream stream = new FileStream(targetPdf, FileMode.OpenOrCreate))
+    {
+        Document document = new Document();
+        PdfCopy pdf = new PdfCopy(document, stream);
+        PdfReader reader = null;
+        PdfReader.unethicalreading = true;
+        try
+        {
+            document.Open();
+            foreach (string file in fileNames)
+            {
+                reader = new PdfReader(file);
+                pdf.AddDocument(reader);
+                reader.Close();
+                Console.WriteLine(file + "merged into" + targetPdf + "successfully...");
+            }
+        }
+        catch (Exception ex)
+        {
+            merged = false;
+            Console.WriteLine("Error while trying to merge files: " + ex.Message);
+            Console.WriteLine();
+            if (reader != null)
+            {
+                reader.Close();
+            }
+        }
+        finally
+        {
+            if (document != null)
+            {
+                try
+                {
+                    document.Close();
+                }
+                catch
+                {}
+            }
+        }
+    }
+    return merged;
+}
+bool ConvertToPDF(string source, string output)
+{
+    try
+    {
+        WordDoc.Document document = new WordDoc.Document();
+        document.LoadFromFile(source);
+        document.SaveToFile(output, WordDoc.FileFormat.PDF);
+
+        return true;
+    }
+    catch(Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        return false;
+    }
+}
+
+
+
+Console.WriteLine("INPUT 'r' AT ANY POINT TO RESTART \nDON'T WRITE FILE EXTENTIONS ('.pdf', '.docx', etc.)");
 Console.WriteLine();
 while (true)
 {
-    Console.Write("Action (fill form (f), define field answer (d), clean field (c)): ");
+    Console.Write(" - Fill form (f)\n - Define field answer (d)\n - Delete field answer (e)\n - Merge PDFs (m)\n - Convert file to PDF (c)\n\n Action: ");
     string action = Console.ReadLine();
+    Console.WriteLine();
     if (action == "r")
     {
         Console.WriteLine();
         continue;
     }
-    if (action == "f")
+    else if (action == "f")
     {
         Console.Write("Form's name: ");
         string formName = Console.ReadLine();
@@ -296,6 +365,7 @@ while (true)
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error while trying to open form: " + ex.Message);
+                    Console.WriteLine();
                     continue;
                 }
             }
@@ -307,7 +377,7 @@ while (true)
             Console.WriteLine();
         }
     }
-    else if (action == "c")
+    else if (action == "e")
     {
         Console.Write("Form's name: ");
         string formName = Console.ReadLine();
@@ -361,6 +431,7 @@ while (true)
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error while trying to open form: " + ex.Message);
+                    Console.WriteLine();
                     continue;
                 }
             }
@@ -370,6 +441,112 @@ while (true)
         {
             Console.WriteLine("Error while removing field: " + ex.Message);
             Console.WriteLine();
+        }
+    }
+    else if (action == "m")
+    {
+        bool adding = true;
+        List<string> files = new List<string>();
+        while (adding)
+        {
+            Console.Write("PDF's name (" + (files.Count + 1) + "): ");
+            string docName = Console.ReadLine();
+            if (docName == "r")
+            {
+                files.Clear();
+                adding = false;
+            }
+            files.Add(dataDir + docName + ".pdf");
+            if (files.Count != 1)
+            {
+                Console.Write("Add another file (y/n): ");
+                string ans = Console.ReadLine();
+                if (ans == "n") { adding = false; }
+            }
+        }
+        if (files.Count == 0 || files.Count == 1)
+        {
+            Console.WriteLine();
+            continue;
+        }
+        
+        Console.Write("Output file's name: ");
+        string outputName = Console.ReadLine();
+        if (outputName == "r")
+        {
+            Console.WriteLine();
+            continue;
+        }
+        outputName = dataDir + outputName + ".pdf";
+        bool mergeSuccessful = MergePDFs(files, outputName);
+        if (mergeSuccessful)
+        {
+            Console.WriteLine("Merge has succeded!");
+            Console.Write("Open output file? (y/n): ");
+            string lastResponse = Console.ReadLine();
+            Console.WriteLine();
+            if (lastResponse == "y")
+            {
+                try
+                {
+                    var p = new Process();
+                    p.StartInfo = new ProcessStartInfo(outputName)
+                    {
+                        UseShellExecute = true
+                    };
+                    p.Start();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error while trying to open PDF: " + ex.Message);
+                    Console.WriteLine();
+                }
+            }
+        }
+    }
+    else if (action == "c")
+    {
+        Console.Write("File's name: ");
+        string name = Console.ReadLine();
+        if (name == "r")
+        {
+            Console.WriteLine();
+            continue;
+        }
+        Console.Write("Current file's extention ('doc', 'docx', etc.): ");
+        string extention = Console.ReadLine();
+        if (extention == "r")
+        {
+            Console.WriteLine();
+            continue;
+        }
+        string source = dataDir + name + "." + extention;
+        string output = dataDir + name + ".pdf";
+        bool convertionSuccessful = ConvertToPDF(source, output);
+        Console.WriteLine();
+        if (convertionSuccessful)
+        {
+            Console.WriteLine("Convertion succeded!");
+            Console.Write("Open output file? (y/n): ");
+            string lastResponse = Console.ReadLine();
+            Console.WriteLine();
+            if (lastResponse == "y")
+            {
+                try
+                {
+                    var p = new Process();
+                    p.StartInfo = new ProcessStartInfo(output)
+                    {
+                        UseShellExecute = true
+                    };
+                    p.Start();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error while trying to open file: " + ex.Message);
+                    Console.WriteLine();
+                }
+            }
         }
     }
     else
