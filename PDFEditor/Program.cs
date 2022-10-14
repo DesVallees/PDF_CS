@@ -4,6 +4,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using WordDoc = Spire.Doc;
+using iTextSharp.text;
+using System.Drawing;
+using System.IO;
+using Font = iTextSharp.text.Font;
+using static System.Net.Mime.MediaTypeNames;
 
 var dataDir = @"c:\Users\sntgo\Xamarin\PDFEditor\";
 
@@ -220,13 +225,15 @@ bool MergePDFs(List<string> fileNames, string targetPdf)
         try
         {
             document.Open();
+            Console.WriteLine();
             foreach (string file in fileNames)
             {
                 reader = new PdfReader(file);
                 pdf.AddDocument(reader);
                 reader.Close();
-                Console.WriteLine(file + "merged into" + targetPdf + "successfully...");
+                Console.WriteLine(file + " merged into " + targetPdf + " successfully...");
             }
+            Console.WriteLine();
         }
         catch (Exception ex)
         {
@@ -269,6 +276,39 @@ bool ConvertToPDF(string source, string output)
         return false;
     }
 }
+bool EnumeratePDF(string pdfName)
+{
+    try
+    {
+        Byte[] bytes = System.IO.File.ReadAllBytes(pdfName); ;
+
+        using (var reader = new PdfReader(bytes))
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (var stamper = new PdfStamper(reader, ms))
+                {
+                    int PageCount = reader.NumberOfPages;
+                    var bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                    Font font = new Font(bf, 10, Font.NORMAL, BaseColor.BLACK);
+                    for (int i = 1; i <= PageCount; i++)
+                    {
+                        ColumnText.ShowTextAligned(stamper.GetOverContent(i), Element.ALIGN_CENTER, new Phrase(String.Format("Page {0} of {1}", i, PageCount), font), 550, 10, 0);
+                    }
+                }
+                bytes = ms.ToArray();
+            }
+        }
+
+        System.IO.File.WriteAllBytes(pdfName, bytes);
+        return true;
+    }
+    catch(Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        return false;
+    }
+}
 
 
 
@@ -276,7 +316,7 @@ Console.WriteLine("INPUT 'r' AT ANY POINT TO RESTART \nDON'T WRITE FILE EXTENTIO
 Console.WriteLine();
 while (true)
 {
-    Console.Write(" - Fill form (f)\n - Define field answer (d)\n - Delete field answer (e)\n - Merge PDFs (m)\n - Convert file to PDF (c)\n\n Action: ");
+    Console.Write(" - Fill form (f)\n - Define field answer (d)\n - Delete field answer (e)\n - Merge PDFs (m)\n - Convert file to PDF (c)\n - Enumerate PDF's pages (n)\n\n Action: ");
     string action = Console.ReadLine();
     Console.WriteLine();
     if (action == "r")
@@ -469,12 +509,12 @@ while (true)
             Console.WriteLine();
             continue;
         }
-        
+
+        Console.WriteLine();
         Console.Write("Output file's name: ");
         string outputName = Console.ReadLine();
         if (outputName == "r")
         {
-            Console.WriteLine();
             continue;
         }
         outputName = dataDir + outputName + ".pdf";
@@ -482,24 +522,35 @@ while (true)
         if (mergeSuccessful)
         {
             Console.WriteLine("Merge has succeded!");
-            Console.Write("Open output file? (y/n): ");
-            string lastResponse = Console.ReadLine();
+            Console.Write("Enumerate pages of output file? (y/n): ");
+            string enumerate = Console.ReadLine();
             Console.WriteLine();
-            if (lastResponse == "y")
+            if (enumerate == "y")
             {
-                try
+                bool enumSuccessful = EnumeratePDF(outputName);
+                if (enumSuccessful)
                 {
-                    var p = new Process();
-                    p.StartInfo = new ProcessStartInfo(outputName)
-                    {
-                        UseShellExecute = true
-                    };
-                    p.Start();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error while trying to open PDF: " + ex.Message);
+                    Console.WriteLine("Action completed successfully!");
+                    Console.Write("Open output file? (y/n): ");
+                    string lastResponse = Console.ReadLine();
                     Console.WriteLine();
+                    if (lastResponse == "y")
+                    {
+                        try
+                        {
+                            var p = new Process();
+                            p.StartInfo = new ProcessStartInfo(outputName)
+                            {
+                                UseShellExecute = true
+                            };
+                            p.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error while trying to open file: " + ex.Message);
+                            Console.WriteLine();
+                        }
+                    }
                 }
             }
         }
@@ -536,6 +587,43 @@ while (true)
                 {
                     var p = new Process();
                     p.StartInfo = new ProcessStartInfo(output)
+                    {
+                        UseShellExecute = true
+                    };
+                    p.Start();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error while trying to open file: " + ex.Message);
+                    Console.WriteLine();
+                }
+            }
+        }
+    }
+    else if (action == "n")
+    {
+        Console.Write("File's name: ");
+        string name = Console.ReadLine();
+        if (name == "r")
+        {
+            Console.WriteLine();
+            continue;
+        }
+        string fileName = dataDir + name + ".pdf";
+        bool enumSuccessful = EnumeratePDF(fileName);
+        Console.WriteLine();
+        if (enumSuccessful)
+        {
+            Console.WriteLine("Action completed successfully!");
+            Console.Write("Open output file? (y/n): ");
+            string lastResponse = Console.ReadLine();
+            Console.WriteLine();
+            if (lastResponse == "y")
+            {
+                try
+                {
+                    var p = new Process();
+                    p.StartInfo = new ProcessStartInfo(fileName)
                     {
                         UseShellExecute = true
                     };
